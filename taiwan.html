@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title> D3 page template </title>
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+</head>
+
+<body>
+  <script>
+  var width = 760;
+  var height = 700;
+
+  var canvas = d3.select("body").append("svg")
+		.attr("width", width)
+		.attr("height", height);
+
+  d3.json("twCounty2010.geo.json", function(data) {
+	 var group = canvas.selectAll("g")
+		.data(data.features)
+		.enter()
+		.append("g");
+		
+	 var projection = d3.geo.mercator().center([ 120.639951584311191, 23.821143239852198 ]).scale(10000).translate([width/2 + 150, height/2]);
+	 
+	 var pathString = d3.geo.path().projection(projection);
+	 
+	 group.append("path")
+		  .attr("d", pathString)
+		  .attr("class", "area")
+		  .attr("fill", "purple");
+		  
+     group.append("text")
+		.attr("x", function(d) { return pathString.centroid(d)[0]; })
+		.attr("y", function(d) { return pathString.centroid(d)[1]; })
+		.attr("text-anchor", "middle")
+		.text(function(d) { return d.properties.name; });
+	 
+	 
+  });
+
+  
+  
+  </script>
+
+</body>
+</html>
